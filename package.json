@@ -1,0 +1,71 @@
+{
+  "name": "TemplateCloner",
+  "description": "This CLI executes - almost - every required steps to create a repo from a private template and set the sync system.",
+  "version": "1.0.0",
+  "author": "Daniel Boll @Daniel-Boll",
+  "bin": {
+    "template-cloner": "./bin/run"
+  },
+  "bugs": "https://github.com/Daniel-Boll/TemplateCloner/issues",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+    }
+  },
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/plugin-help": "^3",
+    "execa": "^5.1.1",
+    "inquirer": "^8.1.2",
+    "listr": "^0.14.3",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "@oclif/dev-cli": "^1",
+    "@types/execa": "^2.0.0",
+    "@types/inquirer": "^7.3.3",
+    "@types/listr": "^0.14.4",
+    "@types/node": "^10",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "^5.13",
+    "eslint-config-oclif": "^3.1",
+    "eslint-config-oclif-typescript": "^0.1",
+    "husky": "^7.0.2",
+    "ts-node": "^8",
+    "typescript": "^3.3"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib"
+  ],
+  "homepage": "https://github.com/Daniel-Boll/TemplateCloner",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "bin": "template-cloner"
+  },
+  "repository": "Daniel-Boll/TemplateCloner",
+  "scripts": {
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
