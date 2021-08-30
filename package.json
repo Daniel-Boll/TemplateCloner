@@ -31,7 +31,7 @@
     "@types/listr": "^0.14.4",
     "@types/node": "^10",
     "commitizen": "^4.2.4",
-    "cz-conventional-changelog": "3.3.0",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^5.13",
     "eslint-config-oclif": "^3.1",
     "eslint-config-oclif-typescript": "^0.1",
@@ -61,7 +61,7 @@
     "prepack": "rm -rf lib && tsc -b && oclif-dev readme",
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md",
-    "commit": "cz"
+    "cm": "cz"
   },
   "types": "lib/index.d.ts",
   "config": {
