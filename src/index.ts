@@ -7,29 +7,34 @@ import Listr = require("listr");
 import execa = require("execa");
 
 class TemplateCloner extends Command {
-  static description = "describe the command here";
+  static description =
+    "This CLI executes - almost - every required steps to create a repo from a private template and set the sync system.";
 
   static flags = {
-    // add --version flag to show CLI version
     version: flags.version({ char: "v" }),
     help: flags.help({ char: "h" }),
-    // flag with a value (-n, --name=VALUE)
-    name: flags.string({ char: "n", description: "name to print" }),
-    // flag with no value (-f, --force)
-    force: flags.boolean({ char: "f" }),
+    from: flags.string({ char: "f", description: "source repository" }),
+    to: flags.string({ description: "destiny repository" }),
+    ssh: flags.string({ description: "generate ssh pair" }),
+    public: flags.boolean({ description: "repository privacy mode" }),
+    private: flags.boolean({ description: "repository privacy mode" }),
   };
 
-  static args = [{ name: "file" }];
+  static args = [{ name: "source repo" }, { name: "destiny repo" }];
 
+  // TODO(daniel): implement the other flags.
   async run() {
-    const { flags } = this.parse(TemplateCloner);
+    const { args, flags } = this.parse(TemplateCloner);
 
-    const templateOrg: any = await inquirer.prompt([
-      {
-        name: "name",
-        message: "where are you cloning from",
-      },
-    ]);
+    const templateOrg: any =
+      args["source repo"] || flags.from
+        ? { name: args["source repo"] ?? flags.from }
+        : await inquirer.prompt([
+            {
+              name: "name",
+              message: "where are you cloning from",
+            },
+          ]);
 
     let repos: any;
 
@@ -63,6 +68,7 @@ class TemplateCloner extends Command {
         name: "public",
         message: "is the repo public",
         type: "confirm",
+        default: false,
       },
       {
         name: "ssh",
@@ -91,6 +97,8 @@ class TemplateCloner extends Command {
       .run()
       .catch((err) => console.error(err));
 
+    const dir = repoInfo.to.split(/\//).pop();
+
     if (repoInfo.ssh) {
       await new Listr([
         {
@@ -103,7 +111,7 @@ class TemplateCloner extends Command {
                 "-t",
                 "rsa",
                 "-f",
-                `./${repoInfo.to.split(/\//).pop()}/sshkey`,
+                `./${dir}/sshkey`,
                 "-q",
                 "-N",
                 '""',
@@ -144,16 +152,53 @@ jobs:
          source_repo_path: \${{ secrets.SOURCE_REPO }}
          upstream_branch: \${{ secrets.TARGET_BRANCH }}
          source_repo_ssh_private_key: \${{ secrets.SOURCE_REPO_SSH_PRIVATE_KEY }}`;
+
+            if (!fs.existsSync(`${dir}/.github/workflows`)) {
+              fs.mkdirSync(`${dir}/.github/workflows`, { recursive: true });
+            }
+
             fs.writeFileSync(
-              `${repoInfo.to
-                .split(/\//)
-                .pop()}/.github/workflows/sync-repo-test.yml`,
+              `${dir}/.github/workflows/sync-repo-test.yml`,
               syncRepoYmlFile
             );
           },
         },
       ]).run();
     }
+
+    // TODO(daniel): manage to change dir
+    // await new Listr([
+    //   {
+    //     title: "Adding new files",
+    //     task: async () => {
+    //       return execa("cd", `./${dir} && git add .`.split(/\s/));
+    //     },
+    //   },
+    //   {
+    //     title: "Creating commit",
+    //     task: async () => {
+    //       return execa("git", `commit -S -sm "feat: add start up files from cli."`.split(/\s/));
+    //     },
+    //   },
+    //   {
+    //     title: "Pushing to origin main",
+    //     task: async () => {
+    //       return execa("git", ["push", "-u", "origin", "main"]);
+    //     },
+    //   },
+    // ]).run();
+
+    const { open }: any = await inquirer.prompt([
+      {
+        name: "open",
+        type: "confirm",
+        message: `remember that you'll still have to fill the secrets in the repo at github.\nSOURCE_REPO: ${repoInfo.to}\nTARGET_BRANCH: main (usually)\nSOURCE_REPO_SSH_PRIVATE_KEY: can be found in the root directory in the file sshkey.\n\nThose secrets can be easily set at https://github.com/${repoInfo.to}/settings/secrets/actions, want to automatically open the repo`,
+      },
+    ]);
+
+    open && execa("gh", `repo view ${repoInfo.to} --web`.split(/\s/));
+
+    execa("echo", `Don't forget to add a deploy key on the template repository with the sshkey.pub`.split(/\s/))
   }
 }
 
