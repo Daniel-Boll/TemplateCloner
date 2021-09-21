@@ -105,17 +105,10 @@ class TemplateCloner extends Command {
           title: `Generating SSH key (OpenSSH format)`,
           task: () =>
             Promise.resolve(
-              execa("ssh-keygen", [
-                "-b",
-                "2048",
-                "-t",
-                "rsa",
-                "-f",
-                `./${dir}/sshkey`,
-                "-q",
-                "-N",
-                '""',
-              ])
+              execa(
+                "ssh-keygen",
+                [...`-b 2048 -t rsa -f ./${dir}/sshkey -q -N -C ""`.split(/\s/g)]
+              )
             ),
         },
       ]).run();
@@ -198,7 +191,12 @@ jobs:
 
     open && execa("gh", `repo view ${repoInfo.to} --web`.split(/\s/));
 
-    execa("echo", `Don't forget to add a deploy key on the template repository with the sshkey.pub`.split(/\s/))
+    execa(
+      "echo",
+      `Don't forget to add a deploy key on the template repository with the sshkey.pub`.split(
+        /\s/
+      )
+    );
   }
 }
 
