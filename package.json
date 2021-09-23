@@ -1,7 +1,7 @@
 {
   "name": "TemplateCloner",
   "description": "This CLI executes - almost - every required steps to create a repo from a private template and set the sync system.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Daniel Boll @Daniel-Boll",
   "bin": {
     "template-cloner": "./bin/run"

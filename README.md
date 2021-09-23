@@ -10,7 +10,7 @@ This CLI executes - almost - every required steps to create a repo from a privat
 
 <!-- toc -->
 * [Usage](#usage)
-* [Commands](#commands)
+* [Workflow](#workflow)
 <!-- tocstop -->
 # Usage
 <!-- usage -->
@@ -19,7 +19,7 @@ $ npm install -g TemplateCloner
 $ template-cloner COMMAND
 running command...
 $ template-cloner (-v|--version|version)
-TemplateCloner/1.0.0 linux-x64 node-v16.6.2
+TemplateCloner/1.1.0 linux-x64 node-v16.8.0
 $ template-cloner --help [COMMAND]
 USAGE
   $ template-cloner COMMAND
