@@ -26,7 +26,62 @@ USAGE
 ...
 ```
 <!-- usagestop -->
-# Commands
-<!-- commands -->
+# Workflow
+<!-- workflow -->
 
-<!-- commandsstop -->
+First you need to have a template repository to *"fork"* from. 
+
+Then with the gh cli you can
+
+```bash
+gh repo create -y -p {SourceRepo(User/Org)}/{SourceRepo} --(public|private) {DestinyRepo(User/Org)}/{DestinyRepo} 
+```
+
+Then all you need to do is create a sshkey pair and a github action to sync up with your repo.
+
+But the `template-clone` cli do all of this to you.
+
+```bash
+template-cloner
+? where are you cloning from # Here you informe the {SourceRepo(User/Org)}
+                             # for example Daniel-Boll
+
+? select a repo (Use arrow keys) # Then it will list all the repos from that user/org
+❯ TemplateCloner                 # you just have to select which one you want to clone
+...                              # from
+(Move up and down to reveal more choices)
+ 
+? where youre gonna clone it (owner/repo)  # Now you provide the destination of the cloned repo
+                                           # for example MyOrg/Project2
+```
+
+Then it will prompt you for specific configurations of the repo
+
+- Create the repo as public or private
+- Generate automatically the ssh keys
+- Generate the yml action file
+
+When it's complete you will have some things to do that the script current cannot.
+
+---
+
+### Commit changes.
+Enter the just created folder and commit the file .github folder with the changes, you can also add the `sshkey` and `sshkey.pub` into .gitignore.
+
+---
+
+### Add secrets
+Add the secrets to your repository.
+
+- SOURCE_REPO = `From where you have cloned {User/Org}/{RepoName}`
+- TARGET_BRANCH = `usually main`
+- SOURCE_REPO_SSH_PRIVATE_KEY = `Here you will put the content of the *sshkey* file`
+
+---
+
+### Add deploy key
+In the repo you are cloning from you will have to add a deploy key, it will contain the value equivalent to the `sshkey.pub` file.
+
+---
+
+<!-- workflowstop -->

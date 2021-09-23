@@ -125,7 +125,7 @@ on:
  # Every minute
  # TODO: change this later...
  schedule:
- - cron:  "*/6 * * * *"
+ - cron:  "0 0 * * *"
  # manual trigger
  workflow_dispatch:
 
